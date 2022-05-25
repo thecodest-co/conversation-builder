@@ -32,7 +32,7 @@ class UserClientTest {
     private MockRestServiceServer mockRestServiceServer;
 
     @Test
-    void userClientSuccessfullyReturnsUserDuke() throws Exception {
+    void userClientSuccessfullyReturnsUsers() throws Exception {
 
         final String teamId = "TEAMIDXX001";
         final UserDTO user_1 = new UserDTO("USERIDXX001", teamId, "USER001");
