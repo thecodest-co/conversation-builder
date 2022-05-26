@@ -33,7 +33,7 @@ class UserClientTest {
 
     public static final String USERS_URL = "/slack/users";
 
-    private static ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     private UserClient userClient;

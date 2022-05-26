@@ -30,7 +30,7 @@ public class UserClient {
                 users.addAll(Arrays.asList(remoteUsers));
             }
         } catch (RestClientException e) {
-            log.error("User Rest Api call failure: Reason: \n" + e);
+            log.error("User Rest Api call failure. Reason: \n" + e);
         }
         return users;
     }
