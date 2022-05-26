@@ -16,6 +16,8 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 public class MemeClient {
 
+    private static final String EMPTY_STRING = "";
+
     @Value("${external.api.meme.url}")
     private String memeUrl;
 
@@ -26,16 +28,15 @@ public class MemeClient {
     }
 
     public String getRandomMemeURL() {
-        MemeResponseDTO response = null;
         try {
-            response = restTemplate.getForObject("", MemeResponseDTO.class);
+            final MemeResponseDTO response = restTemplate.getForObject("", MemeResponseDTO.class);
             log.info("Meme Rest Api call success: " + response);
+            if (response != null && response.getImage() != null) {
+                return response.getImage();
+            }
         } catch (RestClientException e) {
             log.error("Meme Rest Api call failure. Reason: \n" + e);
         }
-        if (response != null && response.getImage() != null) {
-            return response.getImage();
-        }
-        return "";
+        return EMPTY_STRING;
     }
 }

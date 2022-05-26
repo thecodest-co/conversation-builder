@@ -1,5 +1,8 @@
-package co.thecodest.conversationbuilder.meme.client;
+package co.thecodest.conversationbuilder.conversation.client;
 
+import co.thecodest.conversationbuilder.conversation.dto.ConversationRequestDTO;
+import co.thecodest.conversationbuilder.conversation.dto.ConversationResponseDTO;
+import co.thecodest.conversationbuilder.meme.client.MemeClient;
 import co.thecodest.conversationbuilder.meme.dto.MemeResponseDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,6 +13,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureWebClient;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,57 +27,58 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-@RestClientTest(MemeClient.class)
-@ExtendWith(MockitoExtension.class)
-class MemeClientTest {
+@RestClientTest(ConversationClient.class)
+@AutoConfigureWebClient(registerRestTemplate = true)
+class ConversationClientTest {
 
-    public static final String MEMES_SERVICE_URL = "";
+    public static final String CONVERSATIONS_SERVICE_URL = "/slack/conversations";
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
-    private MemeClient memeClient;
+    private ConversationClient conversationClient;
 
     @Autowired
     private MockRestServiceServer mockRestServiceServer;
 
     @Test
-    void memeServiceSuccessfullyReturnsUrl() throws Exception {
-        final String memeUrl = "https://test-url.pl/meme.jpg";
-        final MemeResponseDTO response = new MemeResponseDTO(1L, memeUrl, "", "");
+    void conversationServiceSuccessfullyReturnsConversationId() throws Exception {
+        final String conversationId = "C03HRV5KK1P";
+        final ConversationResponseDTO response = new ConversationResponseDTO(conversationId, "");
 
         final String responseJson = objectMapper.writeValueAsString(response);
 
         this.mockRestServiceServer
-                .expect(requestTo(MEMES_SERVICE_URL))
-                .andRespond(withSuccess(responseJson,MediaType.APPLICATION_JSON));
+                .expect(requestTo(CONVERSATIONS_SERVICE_URL))
+                .andRespond(withSuccess(responseJson, MediaType.APPLICATION_JSON));
 
-        String actualMemeURL = memeClient.getRandomMemeURL();
-        assertThat(actualMemeURL).isEqualTo(memeUrl);
+        String actualMemeURL = conversationClient.createConversation(new ConversationRequestDTO());
+        assertThat(actualMemeURL).isEqualTo(conversationId);
     }
 
     @ParameterizedTest
-    @MethodSource("provideArgumentsForMemeServiceSuccessfullyReturnsEmptyUrl")
-    void memeServiceSuccessfullyReturnsEmptyUrl(ResponseCreator remoteCallResponseCreator) {
+    @MethodSource("provideArgumentsForConversationsServiceSuccessfullyReturnsEmptyString")
+    void conversationServiceSuccessfullyReturnsEmptyString(ResponseCreator remoteCallResponseCreator) {
         this.mockRestServiceServer
-                .expect(requestTo(MEMES_SERVICE_URL))
+                .expect(requestTo(CONVERSATIONS_SERVICE_URL))
                 .andRespond(remoteCallResponseCreator);
 
-        String actualMemeURL = memeClient.getRandomMemeURL();
-        assertThat(actualMemeURL).isEmpty();
+        String actualConversationId = conversationClient.createConversation(new ConversationRequestDTO());
+        assertThat(actualConversationId).isEmpty();
     }
 
-    private static Stream<Arguments> provideArgumentsForMemeServiceSuccessfullyReturnsEmptyUrl()
+    private static Stream<Arguments> provideArgumentsForConversationsServiceSuccessfullyReturnsEmptyString()
             throws JsonProcessingException {
         final String nullResponse = objectMapper.writeValueAsString(null);
-        final String nullUrlInResponse = objectMapper.writeValueAsString(
-                new MemeResponseDTO(1L, null, null, null));
+        final String nullIdInResponse = objectMapper.writeValueAsString(
+                new ConversationResponseDTO(null, null));
 
         return Stream.of(
                 Arguments.of(withSuccess(nullResponse, MediaType.APPLICATION_JSON)),
-                Arguments.of(withSuccess(nullUrlInResponse, MediaType.APPLICATION_JSON)),
+                Arguments.of(withSuccess(nullIdInResponse, MediaType.APPLICATION_JSON)),
                 Arguments.of(withStatus(HttpStatus.BAD_REQUEST)),
                 Arguments.of(withStatus(HttpStatus.INTERNAL_SERVER_ERROR))
         );
     }
+
 }

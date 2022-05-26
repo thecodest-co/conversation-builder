@@ -28,7 +28,6 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 @RestClientTest(UserClient.class)
 @AutoConfigureWebClient(registerRestTemplate = true)
-@TestPropertySource(properties = {"external.api.users.url=/slack/users"})
 class UserClientTest {
 
     public static final String USERS_URL = "/slack/users";
