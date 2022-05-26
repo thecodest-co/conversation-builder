@@ -13,7 +13,7 @@ public class RestTemplateConfiguration {
     private String externalApiBaseUrl;
 
     @Bean
-    public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder){
+    public RestTemplate slackApiRestTemplate(RestTemplateBuilder restTemplateBuilder){
         return restTemplateBuilder.rootUri(externalApiBaseUrl).build();
     }
 }

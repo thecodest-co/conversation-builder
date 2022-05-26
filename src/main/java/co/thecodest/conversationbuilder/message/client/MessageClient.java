@@ -4,14 +4,16 @@ import co.thecodest.conversationbuilder.message.dto.MessageDTO;
 import co.thecodest.conversationbuilder.user.dto.UserDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 
-@Service
+@Component
 @RequiredArgsConstructor
 @Slf4j
 public class MessageClient {
@@ -19,6 +21,7 @@ public class MessageClient {
     @Value("${external.api.messages.url}")
     private String messagesUrl;
 
+    @Qualifier("slackApiRestTemplate")
     private final RestTemplate restTemplate;
 
     public void sendMessage(final MessageDTO messageDTO) {
@@ -26,7 +29,7 @@ public class MessageClient {
             final String response = restTemplate.postForObject(messagesUrl, messageDTO, String.class);
             log.info("Message Rest Api call success: " + response);
         } catch (RestClientException e) {
-            log.error("Message Rest Api call failure: Reason: \n" + e);
+            log.error("Message Rest Api call failure. Reason: \n" + e);
         }
     }
 
