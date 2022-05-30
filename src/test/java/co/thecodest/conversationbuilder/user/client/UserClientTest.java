@@ -12,7 +12,6 @@ import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureWebCl
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.client.ResponseCreator;
 
@@ -75,6 +74,7 @@ class UserClientTest {
         this.mockRestServiceServer
                 .expect(requestTo(USERS_URL))
                 .andRespond(remoteCallResponseCreator);
+
 
         final List<UserDTO> actualUsers = userClient.getAllUsers();
         assertThat(actualUsers).isEmpty();

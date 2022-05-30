@@ -11,10 +11,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static co.thecodest.conversationbuilder.TestUtils.createUsers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -32,7 +31,7 @@ class UserServiceTest {
     @ParameterizedTest
     @MethodSource("provideArgumentsForUserServiceSuccessfullyReturnsUsers")
     void userServiceSuccessfullyReturnsUsers(int limit) {
-        when(userClient.getAllUsers()).thenReturn(createUsers());
+        when(userClient.getAllUsers()).thenReturn(createUsers(NUMBER_OF_USERS));
 
         List<UserDTO> randomUsers = userService.getRandomUsersUpToLimit(limit);
 
@@ -41,12 +40,6 @@ class UserServiceTest {
         assertThat(randomUsers.size()).isEqualTo(expectedNumberOfUsers);
     }
 
-    List<UserDTO> createUsers() {
-        final String teamId = "TEAMIDXX001";
-        return IntStream.range(0, UserServiceTest.NUMBER_OF_USERS)
-                .mapToObj(i -> new UserDTO("USERIDXX" + i, teamId, "USER" + i))
-                .collect(Collectors.toList());
-    }
 
     private static Stream<Arguments> provideArgumentsForUserServiceSuccessfullyReturnsUsers() {
         int limitLowerThanNumberOfUsers = NUMBER_OF_USERS - 1;

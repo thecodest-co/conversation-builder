@@ -1,0 +1,21 @@
+service: serverless-conversation-builder
+
+provider:
+  name: aws
+  runtime: java11
+  timeout: 20
+
+# jar file that will be uploaded and executed on AWS
+package:
+  artifact: target/conversation-builder-0.0.1-SNAPSHOT-aws.jar
+
+#define Lambda function
+functions:
+  build-conversations:
+    handler: org.springframework.cloud.function.adapter.aws.FunctionInvoker::handleRequest
+    events: # api gateway
+      - http:
+          path: conversations
+          method: post
+    environment: # environment variables
+      FUNCTION_NAME: awsFunction

@@ -9,5 +9,4 @@ public class ConversationBuilderApplication {
     public static void main(String[] args) {
         SpringApplication.run(ConversationBuilderApplication.class, args);
     }
-
 }

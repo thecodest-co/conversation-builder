@@ -27,7 +27,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 @ExtendWith(MockitoExtension.class)
 class MemeClientTest {
 
-    public static final String MEMES_SERVICE_URL = "";
+    public static final String MEMES_SERVICE_URL = "https://some-random-api.ml/meme";
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
