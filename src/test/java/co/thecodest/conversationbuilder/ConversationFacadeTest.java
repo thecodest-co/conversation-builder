@@ -1,11 +1,11 @@
 package co.thecodest.conversationbuilder;
 
-import co.thecodest.conversationbuilder.conversation.client.ConversationClient;
-import co.thecodest.conversationbuilder.meme.client.MemeClient;
-import co.thecodest.conversationbuilder.message.client.MessageClient;
-import co.thecodest.conversationbuilder.message.dto.MessageDTO;
-import co.thecodest.conversationbuilder.user.dto.UserDTO;
-import co.thecodest.conversationbuilder.user.service.UserService;
+import co.thecodest.conversationbuilder.external.conversation.client.ConversationClient;
+import co.thecodest.conversationbuilder.external.meme.client.MemeClient;
+import co.thecodest.conversationbuilder.external.message.client.MessageClient;
+import co.thecodest.conversationbuilder.external.message.dto.MessageDTO;
+import co.thecodest.conversationbuilder.external.user.dto.UserDTO;
+import co.thecodest.conversationbuilder.external.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static co.thecodest.conversationbuilder.TestUtils.createUsers;
+import static co.thecodest.conversationbuilder.TestUtil.createUsers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;

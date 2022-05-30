@@ -1,12 +1,12 @@
 package co.thecodest.conversationbuilder;
 
-import co.thecodest.conversationbuilder.conversation.client.ConversationClient;
-import co.thecodest.conversationbuilder.conversation.dto.ConversationRequestDTO;
-import co.thecodest.conversationbuilder.meme.client.MemeClient;
-import co.thecodest.conversationbuilder.message.client.MessageClient;
-import co.thecodest.conversationbuilder.message.dto.MessageDTO;
-import co.thecodest.conversationbuilder.user.dto.UserDTO;
-import co.thecodest.conversationbuilder.user.service.UserService;
+import co.thecodest.conversationbuilder.external.conversation.client.ConversationClient;
+import co.thecodest.conversationbuilder.external.conversation.dto.ConversationRequestDTO;
+import co.thecodest.conversationbuilder.external.meme.client.MemeClient;
+import co.thecodest.conversationbuilder.external.message.client.MessageClient;
+import co.thecodest.conversationbuilder.external.message.dto.MessageDTO;
+import co.thecodest.conversationbuilder.external.user.dto.UserDTO;
+import co.thecodest.conversationbuilder.external.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
