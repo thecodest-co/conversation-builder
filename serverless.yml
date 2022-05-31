@@ -19,3 +19,4 @@ functions:
           method: post
     environment: # environment variables
       FUNCTION_NAME: awsFunction
+      SLACKBOT_SERVICE_URL: ${env:SLACKBOT_SERVICE_URL}
