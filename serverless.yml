@@ -19,3 +19,5 @@ functions:
           method: post
     environment: # environment variables
       FUNCTION_NAME: awsFunction
+      AWS_ACCESS_KEY: ${env:AWS_ACCESS_KEY}
+      AWS_SECRET_KEY: ${env:AWS_SECRET_KEY}

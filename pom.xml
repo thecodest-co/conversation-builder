@@ -18,8 +18,15 @@
         <wrapper.version>1.0.27.RELEASE</wrapper.version>
         <aws-lambda-events.version>3.9.0</aws-lambda-events.version>
         <spring-cloud-function.version>3.0.1.RELEASE</spring-cloud-function.version>
+        <aws-jdk-core.version>1.11.230</aws-jdk-core.version>
     </properties>
     <dependencies>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-core</artifactId>
+            <version>${aws-jdk-core.version}</version>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
