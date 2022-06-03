@@ -16,3 +16,4 @@ functions:
     environment: # environment variables
       FUNCTION_NAME: awsFunction
       SLACKBOT_SERVICE_URL: ${env:SLACKBOT_SERVICE_URL}
+      SLACKBOT_SERVICE_API_KEY: ${env:SLACKBOT_SERVICE_API_KEY}
