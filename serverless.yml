@@ -13,10 +13,6 @@ package:
 functions:
   build-conversations:
     handler: org.springframework.cloud.function.adapter.aws.FunctionInvoker::handleRequest
-    events: # api gateway
-      - http:
-          path: conversations
-          method: post
     environment: # environment variables
       FUNCTION_NAME: awsFunction
       SLACKBOT_SERVICE_URL: ${env:SLACKBOT_SERVICE_URL}
