@@ -15,7 +15,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class UserClient {
+public class UserRemoteClient {
 
     @Value("${external.service.slack.bot.users.url}")
     private String userServiceUrl;

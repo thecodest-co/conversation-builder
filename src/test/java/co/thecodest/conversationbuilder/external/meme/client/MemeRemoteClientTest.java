@@ -23,16 +23,16 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-@RestClientTest(MemeClient.class)
+@RestClientTest(MemeRemoteClient.class)
 @ExtendWith(MockitoExtension.class)
-class MemeClientTest {
+class MemeRemoteClientTest {
 
     public static final String MEMES_SERVICE_URL = "https://some-random-api-test.ml/meme";
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
-    private MemeClient memeClient;
+    private MemeRemoteClient memeRemoteClient;
 
     @Autowired
     private MockRestServiceServer mockRestServiceServer;
@@ -48,7 +48,7 @@ class MemeClientTest {
                 .expect(requestTo(MEMES_SERVICE_URL))
                 .andRespond(withSuccess(responseJson,MediaType.APPLICATION_JSON));
 
-        String actualMemeURL = memeClient.getRandomMemeURL();
+        String actualMemeURL = memeRemoteClient.getRandomMemeURL();
         assertThat(actualMemeURL).isEqualTo(memeUrl);
     }
 
@@ -59,7 +59,7 @@ class MemeClientTest {
                 .expect(requestTo(MEMES_SERVICE_URL))
                 .andRespond(remoteCallResponseCreator);
 
-        String actualMemeURL = memeClient.getRandomMemeURL();
+        String actualMemeURL = memeRemoteClient.getRandomMemeURL();
         assertThat(actualMemeURL).isEmpty();
     }
 

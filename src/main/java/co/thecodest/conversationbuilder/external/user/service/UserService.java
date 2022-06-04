@@ -1,6 +1,6 @@
 package co.thecodest.conversationbuilder.external.user.service;
 
-import co.thecodest.conversationbuilder.external.user.client.UserClient;
+import co.thecodest.conversationbuilder.external.user.client.UserRemoteClient;
 import co.thecodest.conversationbuilder.external.user.dto.UserDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,10 +13,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserClient userClient;
+    private final UserRemoteClient userRemoteClient;
 
     public List<UserDTO> getRandomUsersUpToLimit(long limit) {
-        final List<UserDTO> users = userClient.getAllUsers();
+        final List<UserDTO> users = userRemoteClient.getAllUsers();
         Collections.shuffle(users);
         return users.stream()
                 .limit(limit)

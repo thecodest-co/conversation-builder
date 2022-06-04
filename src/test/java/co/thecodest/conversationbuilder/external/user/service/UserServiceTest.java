@@ -1,6 +1,6 @@
 package co.thecodest.conversationbuilder.external.user.service;
 
-import co.thecodest.conversationbuilder.external.user.client.UserClient;
+import co.thecodest.conversationbuilder.external.user.client.UserRemoteClient;
 import co.thecodest.conversationbuilder.external.user.dto.UserDTO;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 class UserServiceTest {
 
     @Mock
-    private UserClient userClient;
+    private UserRemoteClient userRemoteClient;
 
     @InjectMocks
     private UserService userService;
@@ -31,7 +31,7 @@ class UserServiceTest {
     @ParameterizedTest
     @MethodSource("provideArgumentsForUserServiceSuccessfullyReturnsUsers")
     void userServiceSuccessfullyReturnsUsers(int limit) {
-        when(userClient.getAllUsers()).thenReturn(createUsers(NUMBER_OF_USERS));
+        when(userRemoteClient.getAllUsers()).thenReturn(createUsers(NUMBER_OF_USERS));
 
         List<UserDTO> randomUsers = userService.getRandomUsersUpToLimit(limit);
 

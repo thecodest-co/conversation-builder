@@ -1,8 +1,8 @@
 package co.thecodest.conversationbuilder;
 
-import co.thecodest.conversationbuilder.external.conversation.client.ConversationClient;
-import co.thecodest.conversationbuilder.external.meme.client.MemeClient;
-import co.thecodest.conversationbuilder.external.message.client.MessageClient;
+import co.thecodest.conversationbuilder.external.conversation.client.ConversationRemoteClient;
+import co.thecodest.conversationbuilder.external.meme.client.MemeRemoteClient;
+import co.thecodest.conversationbuilder.external.message.client.MessageRemoteClient;
 import co.thecodest.conversationbuilder.external.message.dto.MessageDTO;
 import co.thecodest.conversationbuilder.external.user.dto.UserDTO;
 import co.thecodest.conversationbuilder.external.user.service.UserService;
@@ -37,11 +37,11 @@ class ConversationFacadeTest {
     @Mock
     private UserService userService;
     @Mock
-    private ConversationClient conversationClient;
+    private ConversationRemoteClient conversationRemoteClient;
     @Mock
-    private MemeClient memeClient;
+    private MemeRemoteClient memeRemoteClient;
     @Mock
-    private MessageClient messageClient;
+    private MessageRemoteClient messageRemoteClient;
     @InjectMocks
     private ConversationFacade conversationFacade;
     @Captor
@@ -58,14 +58,14 @@ class ConversationFacadeTest {
     void facadeSuccessfullyStrokeUpConversations() {
         final List<UserDTO> users = createUsers(((int) NUMBER_OF_USERS));
         when(userService.getRandomUsersUpToLimit(NUMBER_OF_USERS)).thenReturn(users);
-        when(memeClient.getRandomMemeURL()).thenReturn(MEME_URL);
+        when(memeRemoteClient.getRandomMemeURL()).thenReturn(MEME_URL);
 
         conversationFacade.strikeUpConversations();
 
         verify(userService, times(1)).getRandomUsersUpToLimit(eq(NUMBER_OF_USERS));
-        verify(memeClient, times(1)).getRandomMemeURL();
-        verify(conversationClient, times(NUMBER_OF_GROUPS)).createConversation(any());
-        verify(messageClient, atLeastOnce()).sendMessage(messageArgumentCaptor.capture());
+        verify(memeRemoteClient, times(1)).getRandomMemeURL();
+        verify(conversationRemoteClient, times(NUMBER_OF_GROUPS)).createConversation(any());
+        verify(messageRemoteClient, atLeastOnce()).sendMessage(messageArgumentCaptor.capture());
 
         assertThatAllMessagesSend();
     }

@@ -1,9 +1,9 @@
 package co.thecodest.conversationbuilder;
 
-import co.thecodest.conversationbuilder.external.conversation.client.ConversationClient;
+import co.thecodest.conversationbuilder.external.conversation.client.ConversationRemoteClient;
 import co.thecodest.conversationbuilder.external.conversation.dto.ConversationRequestDTO;
-import co.thecodest.conversationbuilder.external.meme.client.MemeClient;
-import co.thecodest.conversationbuilder.external.message.client.MessageClient;
+import co.thecodest.conversationbuilder.external.meme.client.MemeRemoteClient;
+import co.thecodest.conversationbuilder.external.message.client.MessageRemoteClient;
 import co.thecodest.conversationbuilder.external.message.dto.MessageDTO;
 import co.thecodest.conversationbuilder.external.user.dto.UserDTO;
 import co.thecodest.conversationbuilder.external.user.service.UserService;
@@ -23,9 +23,9 @@ public class ConversationFacade {
 
     private static final String MEME_URL_PLACEHOLDER = "<meme-url>";
     private final UserService userService;
-    private final ConversationClient conversationClient;
-    private final MemeClient memeClient;
-    private final MessageClient messageClient;
+    private final ConversationRemoteClient conversationRemoteClient;
+    private final MemeRemoteClient memeRemoteClient;
+    private final MessageRemoteClient messageRemoteClient;
     @Value("${conversation.builder.group.amount}")
     private int numberOfGroups;
     @Value("${conversation.builder.group.size}")
@@ -50,12 +50,12 @@ public class ConversationFacade {
 
     private String createConversation(final List<String> usersIds) {
         final ConversationRequestDTO conversationRequest = new ConversationRequestDTO(usersIds);
-        return conversationClient.createConversation(conversationRequest);
+        return conversationRemoteClient.createConversation(conversationRequest);
     }
 
     private void sendMessage(final String message, final String conversationId) {
         final MessageDTO messageDTO = new MessageDTO(conversationId, message);
-        messageClient.sendMessage(messageDTO);
+        messageRemoteClient.sendMessage(messageDTO);
     }
 
     private List<String> getMessages() {
@@ -69,7 +69,7 @@ public class ConversationFacade {
 
     private String getRandomMemeUrl() {
         if (randomMemeUrl == null) {
-            randomMemeUrl = memeClient.getRandomMemeURL();
+            randomMemeUrl = memeRemoteClient.getRandomMemeURL();
         }
         return randomMemeUrl;
     }

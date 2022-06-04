@@ -25,16 +25,16 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-@RestClientTest(UserClient.class)
+@RestClientTest(UserRemoteClient.class)
 @AutoConfigureWebClient(registerRestTemplate = true)
-class UserClientTest {
+class UserRemoteClientTest {
 
     public static final String USERS_URL = "/users-test";
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
-    private UserClient userClient;
+    private UserRemoteClient userRemoteClient;
 
     @Autowired
     private MockRestServiceServer mockRestServiceServer;
@@ -49,7 +49,7 @@ class UserClientTest {
                 .expect(requestTo(USERS_URL))
                 .andRespond(withSuccess(usersJson, MediaType.APPLICATION_JSON));
 
-        final List<UserDTO> actualUsers = userClient.getAllUsers();
+        final List<UserDTO> actualUsers = userRemoteClient.getAllUsers();
 
         assertThat(actualUsers.size()).isEqualTo(users.size());
 
@@ -68,7 +68,7 @@ class UserClientTest {
                 .andRespond(remoteCallResponseCreator);
 
 
-        final List<UserDTO> actualUsers = userClient.getAllUsers();
+        final List<UserDTO> actualUsers = userRemoteClient.getAllUsers();
         assertThat(actualUsers).isEmpty();
     }
 

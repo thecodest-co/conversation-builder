@@ -23,16 +23,16 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-@RestClientTest(ConversationClient.class)
+@RestClientTest(ConversationRemoteClient.class)
 @AutoConfigureWebClient(registerRestTemplate = true)
-class ConversationClientTest {
+class ConversationRemoteClientTest {
 
     public static final String CONVERSATIONS_SERVICE_URL = "/conversations-test";
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
-    private ConversationClient conversationClient;
+    private ConversationRemoteClient conversationRemoteClient;
 
     @Autowired
     private MockRestServiceServer mockRestServiceServer;
@@ -48,7 +48,7 @@ class ConversationClientTest {
                 .expect(requestTo(CONVERSATIONS_SERVICE_URL))
                 .andRespond(withSuccess(responseJson, MediaType.APPLICATION_JSON));
 
-        String actualMemeURL = conversationClient.createConversation(new ConversationRequestDTO());
+        String actualMemeURL = conversationRemoteClient.createConversation(new ConversationRequestDTO());
         assertThat(actualMemeURL).isEqualTo(conversationId);
     }
 
@@ -59,7 +59,7 @@ class ConversationClientTest {
                 .expect(requestTo(CONVERSATIONS_SERVICE_URL))
                 .andRespond(remoteCallResponseCreator);
 
-        String actualConversationId = conversationClient.createConversation(new ConversationRequestDTO());
+        String actualConversationId = conversationRemoteClient.createConversation(new ConversationRequestDTO());
         assertThat(actualConversationId).isEmpty();
     }
 

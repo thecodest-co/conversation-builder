@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class MessageClient {
+public class MessageRemoteClient {
 
     @Value("${external.service.slack.bot.messages.url}")
     private String messagesServiceUrl;

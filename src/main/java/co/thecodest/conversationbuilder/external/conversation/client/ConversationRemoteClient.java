@@ -12,9 +12,7 @@ import org.springframework.web.client.RestTemplate;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class ConversationClient {
-
-    private static final String EMPTY_STRING = "";
+public class ConversationRemoteClient {
 
     @Value("${external.service.slack.bot.conversations.url}")
     private String conversationServiceUrl;
@@ -32,6 +30,6 @@ public class ConversationClient {
         } catch (RestClientException e) {
             log.error("Conversation Rest Api call failure. Reason: \n" + e);
         }
-        return EMPTY_STRING;
+        return "";
     }
 }
