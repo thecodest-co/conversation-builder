@@ -6,6 +6,9 @@ import java.util.stream.Stream;
 
 public class ListUtil {
 
+    private ListUtil() {
+    }
+
     public static <T> Stream<List<T>> batches(List<T> source, int batchLength) {
         if (batchLength <= 0)
             throw new IllegalArgumentException("Batch length less than one: " + batchLength);
