@@ -20,13 +20,21 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
+    private static final int NUMBER_OF_USERS = 10;
     @Mock
     private UserRemoteClient userRemoteClient;
-
     @InjectMocks
     private UserService userService;
 
-    private static final int NUMBER_OF_USERS = 10;
+    private static Stream<Arguments> provideArgumentsForUserServiceSuccessfullyReturnsUsers() {
+        int limitLowerThanNumberOfUsers = NUMBER_OF_USERS - 1;
+        int limitHigherThanNumberOfUsers = NUMBER_OF_USERS + 5;
+        return Stream.of(
+                Arguments.of(limitLowerThanNumberOfUsers),
+                Arguments.of(limitHigherThanNumberOfUsers),
+                Arguments.of(NUMBER_OF_USERS)
+        );
+    }
 
     @ParameterizedTest
     @MethodSource("provideArgumentsForUserServiceSuccessfullyReturnsUsers")
@@ -38,17 +46,6 @@ class UserServiceTest {
         int expectedNumberOfUsers = Math.min(limit, NUMBER_OF_USERS);
 
         assertThat(randomUsers.size()).isEqualTo(expectedNumberOfUsers);
-    }
-
-
-    private static Stream<Arguments> provideArgumentsForUserServiceSuccessfullyReturnsUsers() {
-        int limitLowerThanNumberOfUsers = NUMBER_OF_USERS - 1;
-        int limitHigherThanNumberOfUsers = NUMBER_OF_USERS + 5;
-        return Stream.of(
-                Arguments.of(limitLowerThanNumberOfUsers),
-                Arguments.of(limitHigherThanNumberOfUsers),
-                Arguments.of(NUMBER_OF_USERS)
-        );
     }
 
 }

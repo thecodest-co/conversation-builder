@@ -16,18 +16,19 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ListUtilTest {
 
-    @Test
-    void throwExceptionWhenLengthLessThanOne() {
-        final Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            batches(Collections.emptyList(), 0);
-        });
-        assertThat(exception).hasMessageContaining("Batch length less than one");
-    }
-
-    @Test
-    void returnsEmptyStreamWhenListEmpty() {
-        final Stream<List<Object>> batches = batches(Collections.emptyList(), 1);
-        assertThat(batches).isEmpty();
+    private static Stream<Arguments> provideArgumentsForSuccessfullyReturnsStreamWithBatches() {
+        return Stream.of(
+                Arguments.of(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9), 1, 9),
+                Arguments.of(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9), 2, 5),
+                Arguments.of(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9), 3, 3),
+                Arguments.of(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9), 4, 3),
+                Arguments.of(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9), 5, 2),
+                Arguments.of(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9), 6, 2),
+                Arguments.of(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9), 7, 2),
+                Arguments.of(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9), 8, 2),
+                Arguments.of(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9), 9, 1),
+                Arguments.of(List.of(1, 2, 3, 4, 5, 6, 7, 8), 2, 4)
+        );
     }
 
     @ParameterizedTest
@@ -46,20 +47,18 @@ class ListUtilTest {
 
     }
 
-    private static Stream<Arguments> provideArgumentsForSuccessfullyReturnsStreamWithBatches() {
-        return Stream.of(
-                Arguments.of(List.of(1,2,3,4,5,6,7,8,9),1,9),
-                Arguments.of(List.of(1,2,3,4,5,6,7,8,9),2,5),
-                Arguments.of(List.of(1,2,3,4,5,6,7,8,9),3,3),
-                Arguments.of(List.of(1,2,3,4,5,6,7,8,9),4,3),
-                Arguments.of(List.of(1,2,3,4,5,6,7,8,9),5,2),
-                Arguments.of(List.of(1,2,3,4,5,6,7,8,9),6,2),
-                Arguments.of(List.of(1,2,3,4,5,6,7,8,9),7,2),
-                Arguments.of(List.of(1,2,3,4,5,6,7,8,9),8,2),
-                Arguments.of(List.of(1,2,3,4,5,6,7,8,9),9,1),
-                Arguments.of(List.of(1,2,3,4,5,6,7,8),2,4)
-        );
+    @Test
+    void throwExceptionWhenLengthLessThanOne() {
+        final Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            batches(Collections.emptyList(), 0);
+        });
+        assertThat(exception).hasMessageContaining("Batch length less than one");
     }
 
+    @Test
+    void returnsEmptyStreamWhenListEmpty() {
+        final Stream<List<Object>> batches = batches(Collections.emptyList(), 1);
+        assertThat(batches).isEmpty();
+    }
 
 }

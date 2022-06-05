@@ -39,6 +39,30 @@ class MemeRemoteClientTest {
     @Autowired
     private MockRestServiceServer mockRestServiceServer;
 
+    private static Stream<Arguments> provideArgumentsForMemeServiceSuccessfullyReturnsEmptyUrl()
+            throws JsonProcessingException {
+        final String nullResponse = objectMapper.writeValueAsString(null);
+        final String nullUrlInResponse = objectMapper.writeValueAsString(
+                new MemeResponseDTO(1L, null, null, null));
+
+        return Stream.of(
+                Arguments.of(withSuccess(nullResponse, MediaType.APPLICATION_JSON)),
+                Arguments.of(withSuccess(nullUrlInResponse, MediaType.APPLICATION_JSON)),
+                Arguments.of(withStatus(HttpStatus.BAD_REQUEST)),
+                Arguments.of(withStatus(HttpStatus.INTERNAL_SERVER_ERROR))
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideArgumentsForMemeServiceSuccessfullyReturnsEmptyUrl")
+    void memeServiceThrowsException(ResponseCreator remoteCallResponseCreator) {
+        this.mockRestServiceServer
+                .expect(requestTo(MEMES_SERVICE_URL))
+                .andRespond(remoteCallResponseCreator);
+
+        assertThrows(RemoteCallException.class, memeRemoteClient::getRandomMemeURL);
+    }
+
     @Test
     void memeServiceSuccessfullyReturnsUrl() throws Exception {
         final String memeUrl = "https://test-url.pl/meme.jpg";
@@ -52,29 +76,5 @@ class MemeRemoteClientTest {
 
         String actualMemeURL = memeRemoteClient.getRandomMemeURL();
         assertThat(actualMemeURL).isEqualTo(memeUrl);
-    }
-
-    @ParameterizedTest
-    @MethodSource("provideArgumentsForMemeServiceSuccessfullyReturnsEmptyUrl")
-    void memeServiceThrowsException(ResponseCreator remoteCallResponseCreator) {
-        this.mockRestServiceServer
-                .expect(requestTo(MEMES_SERVICE_URL))
-                .andRespond(remoteCallResponseCreator);
-
-        assertThrows(RemoteCallException.class, memeRemoteClient::getRandomMemeURL);
-    }
-
-    private static Stream<Arguments> provideArgumentsForMemeServiceSuccessfullyReturnsEmptyUrl()
-            throws JsonProcessingException {
-        final String nullResponse = objectMapper.writeValueAsString(null);
-        final String nullUrlInResponse = objectMapper.writeValueAsString(
-                new MemeResponseDTO(1L, null, null, null));
-
-        return Stream.of(
-                Arguments.of(withSuccess(nullResponse, MediaType.APPLICATION_JSON)),
-                Arguments.of(withSuccess(nullUrlInResponse, MediaType.APPLICATION_JSON)),
-                Arguments.of(withStatus(HttpStatus.BAD_REQUEST)),
-                Arguments.of(withStatus(HttpStatus.INTERNAL_SERVER_ERROR))
-        );
     }
 }

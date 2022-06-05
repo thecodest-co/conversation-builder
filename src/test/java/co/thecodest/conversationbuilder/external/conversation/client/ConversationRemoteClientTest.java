@@ -39,33 +39,6 @@ class ConversationRemoteClientTest {
     @Autowired
     private MockRestServiceServer mockRestServiceServer;
 
-    @Test
-    void conversationServiceSuccessfullyReturnsConversationId() throws Exception {
-        final String conversationId = "C03HRV5KK1P";
-        final ConversationResponseDTO response = new ConversationResponseDTO(conversationId, "");
-
-        final String responseJson = objectMapper.writeValueAsString(response);
-
-        this.mockRestServiceServer
-                .expect(requestTo(CONVERSATIONS_SERVICE_URL))
-                .andRespond(withSuccess(responseJson, MediaType.APPLICATION_JSON));
-
-        String actualMemeURL = conversationRemoteClient.createConversation(new ConversationRequestDTO());
-        assertThat(actualMemeURL).isEqualTo(conversationId);
-    }
-
-    @ParameterizedTest
-    @MethodSource("provideArgumentsForConversationsServiceSuccessfullyReturnsEmptyString")
-    void conversationServiceSuccessfullyReturnsEmptyString(ResponseCreator remoteCallResponseCreator) {
-        this.mockRestServiceServer
-                .expect(requestTo(CONVERSATIONS_SERVICE_URL))
-                .andRespond(remoteCallResponseCreator);
-
-        assertThrows(RemoteCallException.class,
-                () -> conversationRemoteClient.createConversation(new ConversationRequestDTO()));
-
-    }
-
     private static Stream<Arguments> provideArgumentsForConversationsServiceSuccessfullyReturnsEmptyString()
             throws JsonProcessingException {
         final String nullResponse = objectMapper.writeValueAsString(null);
@@ -80,4 +53,30 @@ class ConversationRemoteClientTest {
         );
     }
 
+    @ParameterizedTest
+    @MethodSource("provideArgumentsForConversationsServiceSuccessfullyReturnsEmptyString")
+    void conversationServiceSuccessfullyReturnsEmptyString(ResponseCreator remoteCallResponseCreator) {
+        this.mockRestServiceServer
+                .expect(requestTo(CONVERSATIONS_SERVICE_URL))
+                .andRespond(remoteCallResponseCreator);
+
+        assertThrows(RemoteCallException.class,
+                () -> conversationRemoteClient.createConversation(new ConversationRequestDTO()));
+
+    }
+
+    @Test
+    void conversationServiceSuccessfullyReturnsConversationId() throws Exception {
+        final String conversationId = "C03HRV5KK1P";
+        final ConversationResponseDTO response = new ConversationResponseDTO(conversationId, "");
+
+        final String responseJson = objectMapper.writeValueAsString(response);
+
+        this.mockRestServiceServer
+                .expect(requestTo(CONVERSATIONS_SERVICE_URL))
+                .andRespond(withSuccess(responseJson, MediaType.APPLICATION_JSON));
+
+        String actualMemeURL = conversationRemoteClient.createConversation(new ConversationRequestDTO());
+        assertThat(actualMemeURL).isEqualTo(conversationId);
+    }
 }

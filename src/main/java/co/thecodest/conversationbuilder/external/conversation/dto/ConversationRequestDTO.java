@@ -10,5 +10,5 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ConversationRequestDTO {
-   private List<String> users;
+    private List<String> users;
 }

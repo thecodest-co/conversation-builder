@@ -41,6 +41,29 @@ class UserRemoteClientTest {
     @Autowired
     private MockRestServiceServer mockRestServiceServer;
 
+    private static Stream<Arguments> provideArgumentsForUserServiceSuccessfullyReturnsEmptyList()
+            throws JsonProcessingException {
+        final String nullUsersList = objectMapper.writeValueAsString(null);
+        final String emptyUsersList = objectMapper.writeValueAsString(Collections.emptyList());
+
+        return Stream.of(
+                Arguments.of(withSuccess(nullUsersList, MediaType.APPLICATION_JSON)),
+                Arguments.of(withSuccess(emptyUsersList, MediaType.APPLICATION_JSON)),
+                Arguments.of(withStatus(HttpStatus.BAD_REQUEST)),
+                Arguments.of(withStatus(HttpStatus.INTERNAL_SERVER_ERROR))
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideArgumentsForUserServiceSuccessfullyReturnsEmptyList")
+    void userServiceServiceThrowsException(ResponseCreator remoteCallResponseCreator) {
+        this.mockRestServiceServer
+                .expect(requestTo(USERS_URL))
+                .andRespond(remoteCallResponseCreator);
+
+        assertThrows(RemoteCallException.class, userRemoteClient::getAllUsers);
+    }
+
     @Test
     void userClientSuccessfullyReturnsUsers() throws Exception {
         final List<UserDTO> users = createUsers(3);
@@ -60,28 +83,5 @@ class UserRemoteClientTest {
             assertThat(actualUser.getName()).isEqualTo(user.getName());
             assertThat(actualUser.getTeamId()).isEqualTo(user.getTeamId());
         });
-    }
-
-    @ParameterizedTest
-    @MethodSource("provideArgumentsForUserServiceSuccessfullyReturnsEmptyList")
-    void userServiceServiceThrowsException(ResponseCreator remoteCallResponseCreator) {
-        this.mockRestServiceServer
-                .expect(requestTo(USERS_URL))
-                .andRespond(remoteCallResponseCreator);
-
-        assertThrows(RemoteCallException.class, userRemoteClient::getAllUsers);
-    }
-
-    private static Stream<Arguments> provideArgumentsForUserServiceSuccessfullyReturnsEmptyList()
-            throws JsonProcessingException {
-        final String nullUsersList = objectMapper.writeValueAsString(null);
-        final String emptyUsersList = objectMapper.writeValueAsString(Collections.emptyList());
-
-        return Stream.of(
-                Arguments.of(withSuccess(nullUsersList, MediaType.APPLICATION_JSON)),
-                Arguments.of(withSuccess(emptyUsersList, MediaType.APPLICATION_JSON)),
-                Arguments.of(withStatus(HttpStatus.BAD_REQUEST)),
-                Arguments.of(withStatus(HttpStatus.INTERNAL_SERVER_ERROR))
-        );
     }
 }
