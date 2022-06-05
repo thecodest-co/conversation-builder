@@ -1,5 +1,6 @@
 package co.thecodest.conversationbuilder.external.meme.client;
 
+import co.thecodest.conversationbuilder.external.exception.RemoteCallException;
 import co.thecodest.conversationbuilder.external.meme.dto.MemeResponseDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,6 +20,7 @@ import org.springframework.test.web.client.ResponseCreator;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
@@ -46,7 +48,7 @@ class MemeRemoteClientTest {
 
         this.mockRestServiceServer
                 .expect(requestTo(MEMES_SERVICE_URL))
-                .andRespond(withSuccess(responseJson,MediaType.APPLICATION_JSON));
+                .andRespond(withSuccess(responseJson, MediaType.APPLICATION_JSON));
 
         String actualMemeURL = memeRemoteClient.getRandomMemeURL();
         assertThat(actualMemeURL).isEqualTo(memeUrl);
@@ -54,13 +56,12 @@ class MemeRemoteClientTest {
 
     @ParameterizedTest
     @MethodSource("provideArgumentsForMemeServiceSuccessfullyReturnsEmptyUrl")
-    void memeServiceSuccessfullyReturnsEmptyUrl(ResponseCreator remoteCallResponseCreator) {
+    void memeServiceThrowsException(ResponseCreator remoteCallResponseCreator) {
         this.mockRestServiceServer
                 .expect(requestTo(MEMES_SERVICE_URL))
                 .andRespond(remoteCallResponseCreator);
 
-        String actualMemeURL = memeRemoteClient.getRandomMemeURL();
-        assertThat(actualMemeURL).isEmpty();
+        assertThrows(RemoteCallException.class, memeRemoteClient::getRandomMemeURL);
     }
 
     private static Stream<Arguments> provideArgumentsForMemeServiceSuccessfullyReturnsEmptyUrl()

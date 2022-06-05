@@ -51,7 +51,7 @@ class ConversationFacadeTest {
     public void setUp() {
         ReflectionTestUtils.setField(conversationFacade, "numberOfGroups", NUMBER_OF_GROUPS);
         ReflectionTestUtils.setField(conversationFacade, "groupSize", GROUPS_SIZE);
-        ReflectionTestUtils.setField(conversationFacade, "messagesString", MESSAGES);
+        ReflectionTestUtils.setField(conversationFacade, "messagesTextsString", MESSAGES);
     }
 
     @Test

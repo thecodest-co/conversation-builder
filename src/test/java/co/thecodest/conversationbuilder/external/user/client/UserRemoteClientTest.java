@@ -1,5 +1,6 @@
 package co.thecodest.conversationbuilder.external.user.client;
 
+import co.thecodest.conversationbuilder.external.exception.RemoteCallException;
 import co.thecodest.conversationbuilder.external.user.dto.UserDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,6 +22,7 @@ import java.util.stream.Stream;
 
 import static co.thecodest.conversationbuilder.TestUtil.createUsers;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
@@ -62,14 +64,12 @@ class UserRemoteClientTest {
 
     @ParameterizedTest
     @MethodSource("provideArgumentsForUserServiceSuccessfullyReturnsEmptyList")
-    void userServiceSuccessfullyReturnsEmptyList(ResponseCreator remoteCallResponseCreator) {
+    void userServiceServiceThrowsException(ResponseCreator remoteCallResponseCreator) {
         this.mockRestServiceServer
                 .expect(requestTo(USERS_URL))
                 .andRespond(remoteCallResponseCreator);
 
-
-        final List<UserDTO> actualUsers = userRemoteClient.getAllUsers();
-        assertThat(actualUsers).isEmpty();
+        assertThrows(RemoteCallException.class, userRemoteClient::getAllUsers);
     }
 
     private static Stream<Arguments> provideArgumentsForUserServiceSuccessfullyReturnsEmptyList()
