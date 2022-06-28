@@ -1,4 +1,4 @@
-name: Build, test & deploy to stagging
+name: Build, test & deploy to prod
 
 on:
   workflow_dispatch:
