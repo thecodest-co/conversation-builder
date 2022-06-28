@@ -1,5 +1,6 @@
 package co.thecodest.conversationbuilder.external.meme.client;
 
+import co.thecodest.conversationbuilder.external.exception.RemoteCallException;
 import co.thecodest.conversationbuilder.external.meme.dto.MemeResponseDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,49 +20,24 @@ import org.springframework.test.web.client.ResponseCreator;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-@RestClientTest(MemeClient.class)
+@RestClientTest(MemeRemoteClient.class)
 @ExtendWith(MockitoExtension.class)
-class MemeClientTest {
+class MemeRemoteClientTest {
 
     public static final String MEMES_SERVICE_URL = "https://some-random-api-test.ml/meme";
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
-    private MemeClient memeClient;
+    private MemeRemoteClient memeRemoteClient;
 
     @Autowired
     private MockRestServiceServer mockRestServiceServer;
-
-    @Test
-    void memeServiceSuccessfullyReturnsUrl() throws Exception {
-        final String memeUrl = "https://test-url.pl/meme.jpg";
-        final MemeResponseDTO response = new MemeResponseDTO(1L, memeUrl, "", "");
-
-        final String responseJson = objectMapper.writeValueAsString(response);
-
-        this.mockRestServiceServer
-                .expect(requestTo(MEMES_SERVICE_URL))
-                .andRespond(withSuccess(responseJson,MediaType.APPLICATION_JSON));
-
-        String actualMemeURL = memeClient.getRandomMemeURL();
-        assertThat(actualMemeURL).isEqualTo(memeUrl);
-    }
-
-    @ParameterizedTest
-    @MethodSource("provideArgumentsForMemeServiceSuccessfullyReturnsEmptyUrl")
-    void memeServiceSuccessfullyReturnsEmptyUrl(ResponseCreator remoteCallResponseCreator) {
-        this.mockRestServiceServer
-                .expect(requestTo(MEMES_SERVICE_URL))
-                .andRespond(remoteCallResponseCreator);
-
-        String actualMemeURL = memeClient.getRandomMemeURL();
-        assertThat(actualMemeURL).isEmpty();
-    }
 
     private static Stream<Arguments> provideArgumentsForMemeServiceSuccessfullyReturnsEmptyUrl()
             throws JsonProcessingException {
@@ -75,5 +51,30 @@ class MemeClientTest {
                 Arguments.of(withStatus(HttpStatus.BAD_REQUEST)),
                 Arguments.of(withStatus(HttpStatus.INTERNAL_SERVER_ERROR))
         );
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideArgumentsForMemeServiceSuccessfullyReturnsEmptyUrl")
+    void memeServiceThrowsException(ResponseCreator remoteCallResponseCreator) {
+        this.mockRestServiceServer
+                .expect(requestTo(MEMES_SERVICE_URL))
+                .andRespond(remoteCallResponseCreator);
+
+        assertThrows(RemoteCallException.class, memeRemoteClient::getRandomMemeURL);
+    }
+
+    @Test
+    void memeServiceSuccessfullyReturnsUrl() throws Exception {
+        final String memeUrl = "https://test-url.pl/meme.jpg";
+        final MemeResponseDTO response = new MemeResponseDTO(1L, memeUrl, "", "");
+
+        final String responseJson = objectMapper.writeValueAsString(response);
+
+        this.mockRestServiceServer
+                .expect(requestTo(MEMES_SERVICE_URL))
+                .andRespond(withSuccess(responseJson, MediaType.APPLICATION_JSON));
+
+        String actualMemeURL = memeRemoteClient.getRandomMemeURL();
+        assertThat(actualMemeURL).isEqualTo(memeUrl);
     }
 }

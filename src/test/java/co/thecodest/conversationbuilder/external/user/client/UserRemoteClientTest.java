@@ -1,6 +1,8 @@
 package co.thecodest.conversationbuilder.external.user.client;
 
+import co.thecodest.conversationbuilder.external.exception.RemoteCallException;
 import co.thecodest.conversationbuilder.external.user.dto.UserDTO;
+import co.thecodest.conversationbuilder.external.user.dto.UserResponseDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -21,56 +23,24 @@ import java.util.stream.Stream;
 
 import static co.thecodest.conversationbuilder.TestUtil.createUsers;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-@RestClientTest(UserClient.class)
+@RestClientTest(UserRemoteClient.class)
 @AutoConfigureWebClient(registerRestTemplate = true)
-class UserClientTest {
+class UserRemoteClientTest {
 
     public static final String USERS_URL = "/users-test";
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
-    private UserClient userClient;
+    private UserRemoteClient userRemoteClient;
 
     @Autowired
     private MockRestServiceServer mockRestServiceServer;
-
-    @Test
-    void userClientSuccessfullyReturnsUsers() throws Exception {
-        final List<UserDTO> users = createUsers(3);
-
-        final String usersJson = objectMapper.writeValueAsString(users);
-
-        this.mockRestServiceServer
-                .expect(requestTo(USERS_URL))
-                .andRespond(withSuccess(usersJson, MediaType.APPLICATION_JSON));
-
-        final List<UserDTO> actualUsers = userClient.getAllUsers();
-
-        assertThat(actualUsers.size()).isEqualTo(users.size());
-
-        users.forEach(user -> {
-            UserDTO actualUser = actualUsers.stream().filter(au -> au.getId().equals(user.getId())).findAny().get();
-            assertThat(actualUser.getName()).isEqualTo(user.getName());
-            assertThat(actualUser.getTeamId()).isEqualTo(user.getTeamId());
-        });
-    }
-
-    @ParameterizedTest
-    @MethodSource("provideArgumentsForUserServiceSuccessfullyReturnsEmptyList")
-    void userServiceSuccessfullyReturnsEmptyList(ResponseCreator remoteCallResponseCreator) {
-        this.mockRestServiceServer
-                .expect(requestTo(USERS_URL))
-                .andRespond(remoteCallResponseCreator);
-
-
-        final List<UserDTO> actualUsers = userClient.getAllUsers();
-        assertThat(actualUsers).isEmpty();
-    }
 
     private static Stream<Arguments> provideArgumentsForUserServiceSuccessfullyReturnsEmptyList()
             throws JsonProcessingException {
@@ -83,5 +53,37 @@ class UserClientTest {
                 Arguments.of(withStatus(HttpStatus.BAD_REQUEST)),
                 Arguments.of(withStatus(HttpStatus.INTERNAL_SERVER_ERROR))
         );
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideArgumentsForUserServiceSuccessfullyReturnsEmptyList")
+    void userServiceServiceThrowsException(ResponseCreator remoteCallResponseCreator) {
+        this.mockRestServiceServer
+                .expect(requestTo(USERS_URL))
+                .andRespond(remoteCallResponseCreator);
+
+        assertThrows(RemoteCallException.class, userRemoteClient::getAllUsers);
+    }
+
+    @Test
+    void userClientSuccessfullyReturnsUsers() throws Exception {
+        final List<UserDTO> users = createUsers(3);
+        final UserResponseDTO responseDTO = new UserResponseDTO(users);
+
+        final String usersJson = objectMapper.writeValueAsString(responseDTO);
+
+        this.mockRestServiceServer
+                .expect(requestTo(USERS_URL))
+                .andRespond(withSuccess(usersJson, MediaType.APPLICATION_JSON));
+
+        final List<UserDTO> actualUsers = userRemoteClient.getAllUsers();
+
+        assertThat(actualUsers.size()).isEqualTo(users.size());
+
+        users.forEach(user -> {
+            UserDTO actualUser = actualUsers.stream().filter(au -> au.getId().equals(user.getId())).findAny().get();
+            assertThat(actualUser.getName()).isEqualTo(user.getName());
+            assertThat(actualUser.getTeamId()).isEqualTo(user.getTeamId());
+        });
     }
 }

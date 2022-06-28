@@ -1,5 +1,6 @@
 package co.thecodest.conversationbuilder.external.message.client;
 
+import co.thecodest.conversationbuilder.external.exception.RemoteCallException;
 import co.thecodest.conversationbuilder.external.message.dto.MessageDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,19 +12,19 @@ import org.springframework.web.client.RestTemplate;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class MessageClient {
+public class MessageRemoteClient {
 
     @Value("${external.service.slack.bot.messages.url}")
     private String messagesServiceUrl;
 
     private final RestTemplate restTemplate;
 
-    public void sendMessage(final MessageDTO messageDTO) {
+    public void sendMessage(final MessageDTO messageDTO) throws RemoteCallException {
         try {
-            final String response = restTemplate.postForObject(messagesServiceUrl, messageDTO, String.class);
-            log.info("Message Rest Api call success: " + response);
+            restTemplate.postForObject(messagesServiceUrl, messageDTO, String.class);
+            log.info("Message Rest Api call success");
         } catch (RestClientException e) {
-            log.error("Message Rest Api call failure. Reason: \n" + e);
+            throw new RemoteCallException("Message Rest Api call failure", e);
         }
     }
 

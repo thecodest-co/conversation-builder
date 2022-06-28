@@ -18,6 +18,7 @@
         <wrapper.version>1.0.27.RELEASE</wrapper.version>
         <aws-lambda-events.version>3.9.0</aws-lambda-events.version>
         <spring-cloud-function.version>3.0.1.RELEASE</spring-cloud-function.version>
+        <aws-jdk-core.version>1.11.230</aws-jdk-core.version>
     </properties>
     <dependencies>
         <dependency>
@@ -32,17 +33,6 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-function-adapter-aws</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-lambda-java-events</artifactId>
-            <version>${aws-lambda-events.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-lambda-java-core</artifactId>
-            <version>1.1.0</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
