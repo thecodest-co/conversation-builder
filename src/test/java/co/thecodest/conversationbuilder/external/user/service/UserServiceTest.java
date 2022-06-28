@@ -1,6 +1,7 @@
 package co.thecodest.conversationbuilder.external.user.service;
 
 import co.thecodest.conversationbuilder.external.user.client.UserRemoteClient;
+import co.thecodest.conversationbuilder.external.user.dto.UserDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,9 +12,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.List;
 import java.util.stream.Stream;
 
+import static co.thecodest.conversationbuilder.TestUtil.createUsers;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -51,11 +55,10 @@ class UserServiceTest {
     @ParameterizedTest
     @MethodSource("provideArgumentsForUserServiceSuccessfullyReturnsUsers")
     void userServiceSuccessfullyReturnsUsers(int numberOfUsers, int expectedNumberRandomOfUsers) {
-//        when(userRemoteClient.getAllUsers()).thenReturn(createUsers(numberOfUsers));
-//
-//        List<UserDTO> randomUsers = userService.getRandomUsers();
-//        assertThat(randomUsers.size()).isEqualTo(expectedNumberRandomOfUsers);
-        assertThat(false).isTrue();
+        when(userRemoteClient.getAllUsers()).thenReturn(createUsers(numberOfUsers));
+
+        List<UserDTO> randomUsers = userService.getRandomUsers();
+        assertThat(randomUsers.size()).isEqualTo(expectedNumberRandomOfUsers);
     }
 
 }
