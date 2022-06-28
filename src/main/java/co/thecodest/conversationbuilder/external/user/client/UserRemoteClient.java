@@ -2,6 +2,7 @@ package co.thecodest.conversationbuilder.external.user.client;
 
 import co.thecodest.conversationbuilder.external.exception.RemoteCallException;
 import co.thecodest.conversationbuilder.external.user.dto.UserDTO;
+import co.thecodest.conversationbuilder.external.user.dto.UserResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -24,14 +24,14 @@ public class UserRemoteClient {
 
     public List<UserDTO> getAllUsers() throws RemoteCallException {
         try {
-            final UserDTO[] remoteUsers = restTemplate.getForObject(userServiceUrl, UserDTO[].class);
+            final UserResponseDTO responseDTO = restTemplate.getForObject(userServiceUrl, UserResponseDTO.class);
 
-            if (remoteUsers == null || remoteUsers.length == 0) {
+            if (responseDTO == null || responseDTO.getUsers() == null || responseDTO.getUsers().size() == 0) {
                 throw new RemoteCallException("User Rest Api returned null or empty response");
             }
 
             log.info("User Rest Api call success.");
-            return Arrays.asList(remoteUsers);
+            return responseDTO.getUsers();
         } catch (RestClientException e) {
             throw new RemoteCallException("User Rest Api call failure", e);
         }

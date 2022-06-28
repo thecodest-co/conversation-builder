@@ -5,6 +5,7 @@ target/
 !**/src/test/**/target/
 .env
 env.bat
+.serverless
 
 ### STS ###
 .apt_generated

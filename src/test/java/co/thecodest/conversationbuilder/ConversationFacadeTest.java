@@ -49,7 +49,6 @@ class ConversationFacadeTest {
 
     @BeforeEach
     public void setUp() {
-        ReflectionTestUtils.setField(conversationFacade, "numberOfGroups", NUMBER_OF_GROUPS);
         ReflectionTestUtils.setField(conversationFacade, "groupSize", GROUPS_SIZE);
         ReflectionTestUtils.setField(conversationFacade, "messagesTextsString", MESSAGES);
     }
@@ -57,12 +56,12 @@ class ConversationFacadeTest {
     @Test
     void facadeSuccessfullyStrokeUpConversations() {
         final List<UserDTO> users = createUsers(((int) NUMBER_OF_USERS));
-        when(userService.getRandomUsersUpToLimit(NUMBER_OF_USERS)).thenReturn(users);
+        when(userService.getRandomUsers()).thenReturn(users);
         when(memeRemoteClient.getRandomMemeURL()).thenReturn(MEME_URL);
 
         conversationFacade.strikeUpConversations();
 
-        verify(userService, times(1)).getRandomUsersUpToLimit(eq(NUMBER_OF_USERS));
+        verify(userService, times(1)).getRandomUsers();
         verify(memeRemoteClient, times(1)).getRandomMemeURL();
         verify(conversationRemoteClient, times(NUMBER_OF_GROUPS)).createConversation(any());
         verify(messageRemoteClient, atLeastOnce()).sendMessage(messageArgumentCaptor.capture());

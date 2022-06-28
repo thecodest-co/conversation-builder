@@ -27,6 +27,7 @@ class ListUtilTest {
                 Arguments.of(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9), 7, 2),
                 Arguments.of(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9), 8, 2),
                 Arguments.of(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9), 9, 1),
+                Arguments.of(List.of(1, 2, 3), 9, 1),
                 Arguments.of(List.of(1, 2, 3, 4, 5, 6, 7, 8), 2, 4)
         );
     }

@@ -30,8 +30,6 @@ public class ConversationFacade {
     private final ConversationRemoteClient conversationRemoteClient;
     private final MemeRemoteClient memeRemoteClient;
     private final MessageRemoteClient messageRemoteClient;
-    @Value("${conversation.builder.group.amount}")
-    private int numberOfGroups;
     @Value("${conversation.builder.group.size}")
     private int groupSize;
     @Value("${conversation.builder.messages}")
@@ -40,9 +38,8 @@ public class ConversationFacade {
     private String randomMemeUrl;
 
     public void strikeUpConversations() {
-        int numberOfUsers = numberOfGroups * groupSize;
         try {
-            final List<UserDTO> randomUsers = userService.getRandomUsersUpToLimit(numberOfUsers);
+            final List<UserDTO> randomUsers = userService.getRandomUsers();
 
             final List<String> randomUsersIds = randomUsers.stream()
                     .map(UserDTO::getId)

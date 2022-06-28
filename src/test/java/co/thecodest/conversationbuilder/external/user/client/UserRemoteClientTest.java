@@ -2,6 +2,7 @@ package co.thecodest.conversationbuilder.external.user.client;
 
 import co.thecodest.conversationbuilder.external.exception.RemoteCallException;
 import co.thecodest.conversationbuilder.external.user.dto.UserDTO;
+import co.thecodest.conversationbuilder.external.user.dto.UserResponseDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -67,8 +68,9 @@ class UserRemoteClientTest {
     @Test
     void userClientSuccessfullyReturnsUsers() throws Exception {
         final List<UserDTO> users = createUsers(3);
+        final UserResponseDTO responseDTO = new UserResponseDTO(users);
 
-        final String usersJson = objectMapper.writeValueAsString(users);
+        final String usersJson = objectMapper.writeValueAsString(responseDTO);
 
         this.mockRestServiceServer
                 .expect(requestTo(USERS_URL))
